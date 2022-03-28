@@ -40,6 +40,18 @@ app.post('/createTasks', (req, res) => {
   });
 });
 
+app.delete('/deleteTask', (req, res) => {
+  Task.findById(req.query.id).then(result => {
+    if (result !== null) {
+      Task.findByIdAndDelete(req.query.id).then(result => {
+        res.send('Task deleted!');
+      });
+    } else {
+      res.send('Id is not found!');
+    };
+  });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 });
