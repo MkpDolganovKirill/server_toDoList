@@ -34,16 +34,28 @@ app.get('/allTasks', (req, res) => {
 });
 
 app.post('/createTask', (req, res) => {
-  const task = new Task(req.body);
-  task.save().then(result => {
-    res.send('task create!');
-  });
+  try {
+    const body = req.body;
+    if (!(body.hasOwnProperty('text') && body.hasOwnProperty('isCheck'))) return res.status(404).send('Error! Params not found!');
+    if (!(body.isCheck === true || body.isCheck === false)) return res.status(422).send('Error! Param isCheck is not Boolean!');
+    const task = new Task(req.body);
+    task.save().then(result => {
+      res.send('task create!');
+    });
+  } catch (error) {
+    return res.status(422).send({ error, message: 'Error! Params not correct!' });
+  };
 });
 
-app.delete('/deleteTask', (req, res) => {
-  Task.findByIdAndDelete(req.query.id).then(result => {
-    result ? res.send('Task deleted!') : res.send('Task is not found!');
-  });
+app.delete('/deleteTask', async (req, res) => {
+  try {
+    const taskId = req.query.id;
+    if (!taskId) return res.status(422).send('Error! Params not correct');
+    const result = await Task.deleteOne({ _id: taskId });
+    return result.deletedCount > 0 ? res.send('Task delete!') : res.send('Task not found!');
+  } catch (error) {
+    return res.status(422).send({ error, message: 'Error! Params not correct!'});
+  }
 });
 
 app.listen(port, () => {
