@@ -33,7 +33,7 @@ app.get('/allTasks', (req, res) => {
   });
 });
 
-app.post('/createTasks', (req, res) => {
+app.post('/createTask', (req, res) => {
   const task = new Task(req.body);
   task.save().then(result => {
     res.send('task create!');
@@ -41,14 +41,8 @@ app.post('/createTasks', (req, res) => {
 });
 
 app.delete('/deleteTask', (req, res) => {
-  Task.findById(req.query.id).then(result => {
-    if (result !== null) {
-      Task.findByIdAndDelete(req.query.id).then(result => {
-        res.send('Task deleted!');
-      });
-    } else {
-      res.send('Id is not found!');
-    };
+  Task.findByIdAndDelete(req.query.id).then(result => {
+    result ? res.send('Task deleted!') : res.send('Task is not found!');
   });
 });
 
