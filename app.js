@@ -33,15 +33,16 @@ app.get('/allTasks', (req, res) => {
   });
 });
 
-app.post('/createTask', (req, res) => {
+app.post('/createTask', async (req, res) => {
   try {
     const body = req.body;
-    if (!(body.hasOwnProperty('text') && body.hasOwnProperty('isCheck'))) return res.status(404).send('Error! Params not found!');
-    if (!(body.isCheck === true || body.isCheck === false)) return res.status(422).send('Error! Param isCheck is not Boolean!');
-    const task = new Task(req.body);
-    task.save().then(result => {
-      res.send('task create!');
-    });
+    if (!body.hasOwnProperty('text')) return res.status(404).send('Error! Param "text" not found!');
+    if (!body.hasOwnProperty('isCheck')) return res.status(404).send('Error! Param "isCheck" is not found');
+    if (typeof body.text !== "string") return res.status(422).send('Error! Param "text" is not String!');
+    if (typeof body.isCheck !== "boolean") return res.status(422).send('Error! Param isCheck is not Boolean!');
+    const task = new Task(body);
+    await task.save();
+      res.send({task: task, message: 'Task save'});
   } catch (error) {
     return res.status(422).send({ error, message: 'Error! Params not correct!' });
   };
