@@ -10,7 +10,7 @@ const Schema = mongoose.Schema;
 const taskSchema = new Schema({
   text: String,
   isCheck: Boolean
-})
+});
 
 const url = 'mongodb://localhost:27017/allTasks';
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -53,6 +53,17 @@ app.delete('/deleteTask', async (req, res) => {
     return result.deletedCount > 0 ? res.send('Task delete!') : res.send('Task not found!');
   } catch (error) {
     return res.status(422).send({ error, message: 'Error! Params not correct!'});
+  };
+});
+
+app.patch('/updateTask', async (req, res) => {
+  try {
+    const body = req.body;
+    if (!(body.hasOwnProperty('id') && body.hasOwnProperty('text') && body.hasOwnProperty('isCheck'))) return res.status(422).send('Error! Params not found!');
+    const result = await Task.updateOne({ _id: body.id }, body);
+    return result.matchedCount > 0 ? res.send('Task update!') : res.send('Task not found!');
+  } catch (error) {
+    return res.status(422).send({ error, message: 'Error! Params not correct!' });
   };
 });
 
