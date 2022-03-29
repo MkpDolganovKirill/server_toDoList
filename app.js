@@ -36,13 +36,10 @@ app.get('/allTasks', (req, res) => {
 app.post('/createTask', async (req, res) => {
   try {
     const body = req.body;
-    if (!body.hasOwnProperty('text')) return res.status(404).send('Error! Param "text" not found!');
-    if (!body.hasOwnProperty('isCheck')) return res.status(404).send('Error! Param "isCheck" is not found');
-    if (typeof body.text !== "string") return res.status(422).send('Error! Param "text" is not String!');
-    if (typeof body.isCheck !== "boolean") return res.status(422).send('Error! Param isCheck is not Boolean!');
+    if (!(body.hasOwnProperty('text') && body.hasOwnProperty('isCheck'))) return res.status(422).send('Error! Params not found!');
     const task = new Task(body);
     await task.save();
-      res.send({task: task, message: 'Task save'});
+    res.send({task: task, message: 'Task save'});
   } catch (error) {
     return res.status(422).send({ error, message: 'Error! Params not correct!' });
   };
@@ -56,7 +53,7 @@ app.delete('/deleteTask', async (req, res) => {
     return result.deletedCount > 0 ? res.send('Task delete!') : res.send('Task not found!');
   } catch (error) {
     return res.status(422).send({ error, message: 'Error! Params not correct!'});
-  }
+  };
 });
 
 app.listen(port, () => {
