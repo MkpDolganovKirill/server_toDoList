@@ -13,7 +13,7 @@ const taskSchema = new Schema({
 }, {versionKey: false})
 
 const url = 'mongodb://localhost:27017/allTasks';
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true,  });
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const Task = mongoose.model("allTasks", taskSchema);
 
