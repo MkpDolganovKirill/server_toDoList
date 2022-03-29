@@ -33,11 +33,27 @@ app.get('/allTasks', (req, res) => {
   });
 });
 
-app.post('/createTasks', (req, res) => {
-  const task = new Task(req.body);
-  task.save().then(result => {
-    res.send('task create!');
-  });
+app.post('/createTask', async (req, res) => {
+  try {
+    const body = req.body;
+    if (!(body.hasOwnProperty('text') && body.hasOwnProperty('isCheck'))) return res.status(422).send('Error! Params not found!');
+    const task = new Task(body);
+    await task.save();
+    res.send({task: task, message: 'Task save'});
+  } catch (error) {
+    return res.status(422).send({ error, message: 'Error! Params not correct!' });
+  };
+});
+
+app.delete('/deleteTask', async (req, res) => {
+  try {
+    const taskId = req.query.id;
+    if (!taskId) return res.status(422).send('Error! Params not correct');
+    const result = await Task.deleteOne({ _id: taskId });
+    return result.deletedCount > 0 ? res.send('Task delete!') : res.send('Task not found!');
+  } catch (error) {
+    return res.status(422).send({ error, message: 'Error! Params not correct!'});
+  };
 });
 
 app.listen(port, () => {
