@@ -21,8 +21,8 @@ module.exports.createNewTask = async (req, res) => {
 module.exports.changeTaskInfo = async (req, res) => {
 	try {
 		const body = req.body;
-		if (!(body.hasOwnProperty('id') && body.hasOwnProperty('text') && body.hasOwnProperty('isCheck'))) return res.status(422).send('Error! Params not found!');
-		const result = await Task.updateOne({ _id: body.id }, body);
+		if (!(body.hasOwnProperty('_id') && body.hasOwnProperty('text') && body.hasOwnProperty('isCheck'))) return res.status(422).send('Error! Params not found!');
+		const result = await Task.updateOne({ _id: body._id }, body);
 		return result.matchedCount > 0 ? res.send('Task update!') : res.send('Task not found!');
 	} catch (error) {
 		return res.status(422).send({ error, message: 'Error! Params not correct!' });
@@ -31,7 +31,7 @@ module.exports.changeTaskInfo = async (req, res) => {
 
 module.exports.deleteTask = async (req, res) => {
 	try {
-		const taskId = req.query.id;
+		const taskId = req.query._id;
 		if (!taskId) return res.status(422).send('Error! Params not correct');
 		const result = await Task.deleteOne({ _id: taskId });
 		return result.deletedCount > 0 ? res.send('Task delete!') : res.send('Task not found!');
