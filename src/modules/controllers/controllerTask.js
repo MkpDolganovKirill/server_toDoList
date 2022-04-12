@@ -6,6 +6,17 @@ module.exports.getAllTasks = (req, res) => {
 	});
 };
 
+module.exports.getTaskById = async (req, res) => {
+	try {
+		const taskId = req.query._id;
+		if (!taskId) return res.status(422).send('Error! Params not correct');
+		const result = await Task.findOne({ _id: taskId })
+		return res.send( result ? result : 'Not found');
+	} catch (error) {
+		return res.status(422).send({ error, message: 'Error! Params not correct!' });
+	}
+}
+
 module.exports.createNewTask = async (req, res) => {
 	try {
 		const body = req.body;
