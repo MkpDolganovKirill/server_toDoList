@@ -11,7 +11,7 @@ module.exports.getTaskById = async (req, res) => {
 		const taskId = req.query._id;
 		if (!taskId) return res.status(422).send('Error! Params not correct');
 		const result = await Task.findOne({ _id: taskId });
-		return result ? res.send(result) : res.status(422).send('Not found');
+		return result ? res.send(result) : res.status(404).send('Not found');
 	} catch (error) {
 		return res.status(422).send({ error, message: 'Error! Params not correct!' });
 	}
